@@ -60,8 +60,10 @@ class ControllerTests(unittest.TestCase):
     def test_session_listing_does_not_leak_blender_paths(self):
         fake = [{"hwnd": 123, "pid": 77,
                  "title": r"SecretProject [D:\\private\\project.blend] - Blender"}]
-        with mock.patch.object(host.sys, "platform", "win32"), \\
-             mock.patch("blender_controller.windows.list_blender_windows", return_value=fake):
+        with (
+            mock.patch.object(host.sys, "platform", "win32"),
+            mock.patch("blender_controller.windows.list_blender_windows", return_value=fake),
+        ):
             sessions = host.list_sessions()
             self.assertEqual(sessions, [{"session_id": "win32:123", "pid": 77,
                                          "title": "Blender window"}])
