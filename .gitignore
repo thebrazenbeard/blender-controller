@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*.blend
+*.blend1
+*.png
+*.jpg
+*.jpeg
+*.zip
+.env
+.venv/
+.DS_Store
