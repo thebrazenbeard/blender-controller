@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "vera-blender-controller",
+  "version": "0.1.0",
+  "description": "Local attended, window-scoped Blender visual-inspection controller; Windows capture backend only in this draft.",
+  "author": {"name": "thebrazenbeard"},
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Vera Blender Controller",
+        "shortDescription": "Attended Blender window views",
+        "longDescription": "Local attended Blender-window capture with time-limited, revocable grants. No remote VNC/input or unattended host access.",
+        "developerName": "thebrazenbeard",
+        "category": "Developer Tools",
+        "capabilities": ["Interactive"],
+        "defaultPrompt": "Inspect the authorized Blender window on my connected machine."
+      }
+    }
+  }
+}
