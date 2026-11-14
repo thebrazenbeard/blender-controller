@@ -96,9 +96,12 @@ def attended_approval(window):
 
 
 def capture_png(hwnd):
-    target_window(hwnd)  # recheck real executable + window before capture
-    from PIL import ImageGrab
-    im = ImageGrab.grab(window=hwnd)
+    before = target_window(hwnd)  # verify Blender executable and session
+    from .win_capture import capture_window_image
+    im = capture_window_image(hwnd)
+    after = target_window(hwnd)  # reject HWND/process replacement during capture
+    if before["pid"] != after["pid"]:
+        raise PermissionError("Blender window process changed during capture")
     if not im or im.width < 1 or im.height < 1:
         raise RuntimeError("No Blender window pixels available")
     if im.width > MAX_FRAME_WIDTH or im.height > MAX_FRAME_HEIGHT:
