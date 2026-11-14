@@ -49,7 +49,7 @@ def tool(name, args):
     if not set(args).issubset(schema["properties"]) or not set(schema.get("required", ())).issubset(args):
         raise ValueError("Invalid controller arguments")
     if name == "controller_status":
-        return text_result({"version": "0.1.0", **host.capabilities()})
+        return text_result({"version": "0.1.1", **host.capabilities()})
     if name == "list_blender_sessions":
         return text_result({"sessions": host.list_sessions()})
     if name == "request_attended_view":
@@ -89,7 +89,7 @@ def dispatch(request):
         if method == "initialize":
             result = {"protocolVersion": PROTOCOL,
                       "capabilities": {"tools": {"listChanged": False}},
-                      "serverInfo": {"name": "vera-blender-controller", "version": "0.1.0"}}
+                      "serverInfo": {"name": "vera-blender-controller", "version": "0.1.1"}}
         elif method == "ping":
             result = {}
         elif method == "tools/list":

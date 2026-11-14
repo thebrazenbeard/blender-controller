@@ -1,6 +1,6 @@
 # Host-neutral Blender Controller: design and qualification (2026-11-14)
 
-**State:** experimental source-only, **not installed**, **not exposed**, **no remote-VNC or mouse/keyboard control qualified**. This is a portable foundation for an attended visual feedback loop, not a complete UnboundVNC host, consumer remote desktop, or active ChatGPT connection.
+**State:** experimental source plus local runtime probe on Lappy: a Codex plugin is installed and a loopback RFB 3.8 view listener is forwarded through Tailscale as tailnet-only. No public screen endpoint, remote mouse/keyboard access, second-host verification or ChatGPT web plugin connection is qualified. This is a portable foundation for an attended visual feedback loop, not a complete UnboundVNC host, consumer remote desktop, or active ChatGPT connection.
 
 ## Why it is host-neutral
 
