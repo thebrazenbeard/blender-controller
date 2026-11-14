@@ -44,7 +44,7 @@ def _hwnd(session_id: str) -> int:
 
 def list_sessions() -> list[dict]:
     win = _require_windows()
-    return [{"session_id": f"win32:{w['hwnd']}", "pid": w["pid"], "title": w["title"]}
+    return [{"session_id": f"win32:{w['hwnd']}", "pid": w["pid"], "title": "Blender window"}
             for w in win.list_blender_windows()]
 
 
@@ -52,7 +52,7 @@ def resolve_session(session_id: str) -> dict:
     win = _require_windows()
     target = win.target_window(_hwnd(session_id))
     return {"session_id": f"win32:{target['hwnd']}", "pid": target["pid"],
-            "title": target["title"], "handle": target["hwnd"]}
+            "title": "Blender window", "handle": target["hwnd"]}
 
 
 def request_local_consent(session: dict) -> bool:
