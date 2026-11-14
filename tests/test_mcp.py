@@ -57,6 +57,20 @@ class ControllerTests(unittest.TestCase):
             with self.assertRaises(PermissionError):
                 mcp_stdio.tool("capture_blender_view", {"session_id": "win32:321", "view_token": token})
 
+    def test_session_listing_does_not_leak_blender_paths(self):
+        fake = [{"hwnd": 123, "pid": 77,
+                 "title": r"SecretProject [D:\\private\\project.blend] - Blender"}]
+        with mock.patch.object(host.sys, "platform", "win32"), \\
+             mock.patch("blender_controller.windows.list_blender_windows", return_value=fake):
+            sessions = host.list_sessions()
+            self.assertEqual(sessions, [{"session_id": "win32:123", "pid": 77,
+                                         "title": "Blender window"}])
+
+    def test_malformed_tool_params_fail_closed(self):
+        response = mcp_stdio.dispatch({"jsonrpc": "2.0", "id": 12,
+              "method": "tools/call", "params": ["bad"]})
+        self.assertTrue(response["result"]["isError"])
+
     def test_strict_arguments_and_invalid_session_id(self):
         with self.assertRaises(ValueError):
             mcp_stdio.tool("controller_status", {"shell": "powershell"})
