@@ -95,7 +95,9 @@ def dispatch(request):
         elif method == "tools/list":
             result = {"tools": SCHEMAS}
         elif method == "tools/call":
-            params = request.get("params") or {}
+            params = request.get("params")
+            if not isinstance(params, dict):
+                raise ValueError("Malformed tool parameters")
             result = tool(params.get("name"), params.get("arguments") or {})
         else:
             return {"jsonrpc": "2.0", "id": identifier,
