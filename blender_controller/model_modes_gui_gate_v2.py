@@ -47,6 +47,8 @@ handled = set()
 count = 0
 saved = False
 done = False
+bound_hwnd = [None]
+last_integrity_check = [0.0]
 def hwnd_for_pid():
     user = ctypes.WinDLL("user32", use_last_error=True)
     cbtype=ctypes.WINFUNCTYPE(wintypes.BOOL,wintypes.HWND,wintypes.LPARAM)
@@ -73,6 +75,8 @@ def write_once(path,payload):
         json.dump(payload,f,separators=(",",":"),sort_keys=True)
 def guarded_action(request):
     global saved
+    if digest(SOURCE)!=EXPECTED_SHA or digest(MASTER)!=MASTER_SHA:
+        raise PermissionError("Source/master integrity lost")
     action=request["action"]
     args=request["args"]
     if action == "save_candidate":
@@ -101,8 +105,13 @@ def poll():
     if done:return None
     if time.monotonic()-start > RUN_LIMIT_SECONDS:
         done=True;print("MODELAB_GUI_EXPIRED",flush=True);return None
-    if digest(MASTER)!=MASTER_SHA or digest(SOURCE)!=EXPECTED_SHA:
-        done=True;print("MODELAB_GUI_SOURCE_DRIFT",flush=True);return None
+    if bound_hwnd[0] is None or hwnd_for_pid()!=bound_hwnd[0]:
+        done=True;print("MODELAB_GUI_WINDOW_BINDING_LOST",flush=True);return None
+    now=time.monotonic()
+    if now-last_integrity_check[0]>=1.0:
+        last_integrity_check[0]=now
+        if digest(MASTER)!=MASTER_SHA or digest(SOURCE)!=EXPECTED_SHA:
+            done=True;print("MODELAB_GUI_SOURCE_DRIFT",flush=True);return None
     for request in sorted(GATE.glob("request_*.json"))[:2]:
         ident=request.stem.removeprefix("request_")
         if not re.fullmatch("[0-9a-f]{32}",ident):continue
@@ -147,6 +156,7 @@ def bootstrap():
             print("MODELAB_GUI_BLOCKED=no_verified_window",flush=True)
             return None
         return 0.3
+    bound_hwnd[0]=window
     ready=GATE/"ready.json"
     write_once(ready,{"version":"mode-lab-gui-1","pid":os.getpid(),"hwnd":window,
         "source_sha256":EXPECTED_SHA,"session_id":session_id,
