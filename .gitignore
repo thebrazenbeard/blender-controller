@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*.blend
+*.blend1
+*.png
+*.jpg
+*.jpeg
+*.zip
+.venv/
+.DS_Store
+config.bat
+node_modules
