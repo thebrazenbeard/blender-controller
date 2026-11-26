@@ -1,0 +1,15 @@
+# Attended interactive Blender VNC (research release 0.1.3)
+
+The local RFB 3.8 server has **two distinct modes**. Without a control gate it is the original two-minute Blender-window **view-only** mode. With a host-selected `--control-root`, it may accept a **scoped interactive** session after a separate, explicit local Windows approval dialog. The VNC endpoint remains bound to `127.0.0.1`; authorized private Tailscale Serve forwarding is a distinct host operation. It does not install another remote-desktop service or log out the current user.
+
+The supplied control root must already contain a running, allowlisted Blender main-thread gate and a `ready.json` binding its **current** Blender PID and HWND to protocol `private-gui-gate-2`. A stale, mismatched or absent binding refuses control. Every connected client must receive a new **host-local 20-second Yes/No approval**, and the grant is capped at ten minutes, 1,100 frames and 650 actions. Disconnection or a changed Blender window ends control. A viewer is not given shell commands, raw Python, clipboard access, arbitrary text entry, desktop-wide mouse or keyboard injection, or permission to modify a protected master.
+
+Mouse: middle-button drag orbits; right-button drag pans; wheel zooms; left-click selects a mesh using Blender's 3D scene picking; **G/R/S then left-button drag** translates, rotates or scales an eligible experimental wing component. Inputs are bounded and rejected after configured movement/scale limits.
+
+Keyboard: **F/Home** frames the model; **1/3/7** selects front/right/top; **+/-** zooms; **B/H** increases the existing bust/hip shape keys by 0.04, **J/N** decreases them; **Z** undoes one bounded mesh or morph edit; **Escape** cancels an active transform mode. Other keystrokes, including paste and OS shortcuts, are deliberately ignored.
+
+The image backend uses Win32 `PrintWindow` and never falls back to a foreground desktop/monitor grab. The earlier Pillow capture failure that displayed an unrelated browser is documented in `WINDOW_CAPTURE_SECURITY_FIX.md`.
+
+Local test evidence on Lappy: a real Blender GUI loaded a noncanonical working mesh; a fully formed RFB 3.8 loopback connection with **test-injected consent** sent pointer and keyboard events through the bridge, changed Blender's viewport quaternion, changed a shape key, and returned different raw framebuffers. This proves the protocol and current GUI effect path. **It is not evidence of a fresh remote viewer receiving/controlling a complete frame after actual human consent.** The synthetic consent variant was bound to an ephemeral loopback port only and never exposed over Tailscale.
+
+Do not equate these scoped interactive controls with unrestricted manipulation of Blender menus, arbitrary Sculpt Mode brushes, or full Lappy desktop takeover. The current local control gate is a supervised research component rather than a packaged cross-host installer; viewer availability on VN1/VN2 alone does not install it there. No source merge, public VNC exposure, canonical Selfimage promotion, or production authorization is implied.

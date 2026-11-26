@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "vera-blender-controller-local": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["-m", "blender_controller.mcp_stdio"],
+      "cwd": "${PLUGIN_ROOT}"
+    }
+  }
+}
